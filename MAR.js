@@ -29,7 +29,7 @@ function moveRandomly() {
 
   // التحرك إلى الموقع العشوائي
   bot.chat(`أنا ذاهب إلى موقع عشوائي: ${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)}`);
-  console.log(`أنا ذاهب إلى موقع عشوائي: ${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)}`);
+ // console.log(`أنا ذاهب إلى موقع عشوائي: ${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)}`);
 
   // تحريك البوت إلى الموقع العشوائي
   bot.setControlState('forward', true); // التحرك للأمام
