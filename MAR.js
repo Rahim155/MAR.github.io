@@ -20,21 +20,25 @@ bot.on('login', () => {
 
 // وظيفة لاختيار إحداثيات عشوائية حول موقع البوت الحالي والتحرك إليها
 function moveRandomly() {
-  const range = 10; // نطاق الحركة العشوائية حول البوت
+  // تحديد حدود المربع للحركة العشوائية
+  const minX = 0;
+  const maxX = 10;
+  const minZ = 80;
+  const maxZ = 100;
+  const y = 64; // الارتفاع الثابت
 
-  // اختيار إحداثيات عشوائية حول الموقع الحالي
-  const x = bot.entity.position.x + (Math.floor(Math.random() * range * 2) - range);
-  const z = bot.entity.position.z + (Math.floor(Math.random() * range * 2) - range);
-  const y = bot.entity.position.y; // الحفاظ على الارتفاع الحالي
+  // اختيار إحداثيات عشوائية ضمن حدود المربع
+  const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+  const z = Math.floor(Math.random() * (maxZ - minZ + 1)) + minZ;
 
-  // التحرك إلى الموقع العشوائي
-  bot.chat(`أنا ذاهب إلى موقع عشوائي: ${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)}`);
- // console.log(`أنا ذاهب إلى موقع عشوائي: ${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)}`);
-
+  // إرسال رسالة في الدردشة بالموقع العشوائي الذي سيتوجه إليه البوت
+  //bot.chat(`أنا ذاهب إلى موقع عشوائي داخل المربع: ${x}, ${y}, ${z}`);
+  
   // تحريك البوت إلى الموقع العشوائي
-  bot.setControlState('forward', true); // التحرك للأمام
+  bot.setControlState('forward', true); // بدء التحرك للأمام
   setTimeout(() => bot.setControlState('forward', false), 5000); // إيقاف الحركة بعد 5 ثوانٍ
 }
+
 
 // جعل البوت يتحرك عشوائياً كل 5 ثوانٍ
 KeepAlive();
