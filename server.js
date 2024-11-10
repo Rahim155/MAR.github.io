@@ -5,8 +5,9 @@ server.all("/",(req,res) => {
   })
 function KeepAlive()
 {
-  server.listen(10000,() => {
-    console.log("Server is ready");
-  })
+ const PORT = process.env.PORT || 10000; // لتحديد المنفذ من البيئة أو استخدام 10000 كمنفذ افتراضي
+server.listen(PORT, () => {
+  console.log(`Server is ready on port ${PORT}`);
+});
 }
 module.exports = KeepAlive;
