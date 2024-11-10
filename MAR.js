@@ -1,5 +1,5 @@
 const mineflayer = require('mineflayer');
-
+const KeepAlive = require("./server");
 const bot = mineflayer.createBot({
   host: 'Rahim_155.aternos.me', // عنوان السيرفر
   port: 63410, // منفذ ماين كرافت الافتراضي
@@ -37,7 +37,7 @@ function moveRandomly() {
 }
 
 // جعل البوت يتحرك عشوائياً كل 5 ثوانٍ
-
+KeepAlive();
 
 // التعامل مع الأحداث
 bot.on('kicked', (reason) => console.log(`تم طرد البوت: ${reason}`));
