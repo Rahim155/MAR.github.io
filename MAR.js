@@ -3,7 +3,7 @@ const KeepAlive = require("./server");
 const bot = mineflayer.createBot({
   host: 'Rahim_155.aternos.me', // عنوان السيرفر
   port: 63410, // منفذ ماين كرافت الافتراضي
-  username: 'MAR' // اسم البوت
+  username: 'MAR' //  البوت
 });
 
 // عند تسجيل الدخول
