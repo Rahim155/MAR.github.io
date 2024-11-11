@@ -5,7 +5,11 @@ const bot = mineflayer.createBot({
   port: 63410, // منفذ ماين كرافت الافتراضي
   username: 'MAR' //  البوت
 });
-
+bot.on('spawn'),() =>{
+   setInterval(() => {
+    bot.chat("/teleport @s ~~~-20");
+  }, 1000);
+}
 // عند تسجيل الدخول
 bot.on('login', () => {
   console.log('تم تسجيل الدخول بنجاح!');
