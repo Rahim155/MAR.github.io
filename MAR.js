@@ -1,47 +1,35 @@
 const mineflayer = require('mineflayer');
-const KeepAlive = require("./server");
+const KeepAlive = require("./server"); // تأكد من أن هذه الدالة معرفة وتعمل بشكل صحيح
 const bot = mineflayer.createBot({
   host: 'Rahim_155.aternos.me', // عنوان السيرفر
   port: 63410, // منفذ ماين كرافت الافتراضي
-  username: 'MAR' //  البوت
+  username: 'MAR' // اسم البوت
 });
-bot.on('spawn'),() =>{
-   setInterval(() => {
-    bot.chat("/teleport @s 10 64 80");
-  }, 5000);
-}
+
 // عند تسجيل الدخول
 bot.on('login', () => {
   console.log('تم تسجيل الدخول بنجاح!');
   bot.chat('مرحباً! سأبدأ التحرك بشكل عشوائي.');
-  moveRandomly();
   setInterval(() => {
     if (bot.entity.onGround) { // التأكد من أن البوت على الأرض
       moveRandomly();
     }
-  }, 1000);
+    bot.chat('/teleport MAR 10 64 80');
+  }, 5000); // التحرك العشوائي كل 5 ثوانٍ
 });
 
 // وظيفة لاختيار إحداثيات عشوائية حول موقع البوت الحالي والتحرك إليها
 function moveRandomly() {
-  // تحديد حدود المربع للحركة العشوائية
-  
   const y = 64; // الارتفاع الثابت
+  const x = bot.entity.position.x + (Math.floor(Math.random() * 20) - 10); // إحداثي عشوائي حول الموقع الحالي
+  const z = bot.entity.position.z + (Math.floor(Math.random() * 20) - 10); // إحداثي عشوائي حول الموقع الحالي
 
-  // اختيار إحداثيات عشوائية ضمن حدود المربع
-  const x = 20;
-  const z = 100;
-
-  // إرسال رسالة في الدردشة بالموقع العشوائي الذي سيتوجه إليه البوت
-  //bot.chat(`أنا ذاهب إلى موقع عشوائي داخل المربع: ${x}, ${y}, ${z}`);
-  
-  // تحريك البوت إلى الموقع العشوائي
+  bot.chat(`/teleport ${x} ${y} ${z}`); // استخدام أمر التليبور للتحرك
   bot.setControlState('forward', true); // بدء التحرك للأمام
   setTimeout(() => bot.setControlState('forward', false), 5000); // إيقاف الحركة بعد 5 ثوانٍ
 }
 
-
-// جعل البوت يتحرك عشوائياً كل 5 ثوانٍ
+// إبقاء البوت متصلاً
 KeepAlive();
 
 // التعامل مع الأحداث
