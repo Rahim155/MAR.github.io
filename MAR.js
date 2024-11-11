@@ -13,8 +13,9 @@ bot.on('login', () => {
  // bot.chat('مرحباً! سأبدأ التحرك بشكل عشوائي.');
   bot.chat('/gamerule sendCommandFeedback false');
   bot.chat('/gamemode spectator MAR');
+  KeepAlive();
   setInterval(() => {
-    if (bot.entity.onGround) { // التأكد من أن البوت على الأرض
+    if (bot.entity.onGround) { // التأكد من أن البوت على الأر
       moveRandomly();
     }
     bot.chat('/teleport MAR 10 64 80');
@@ -33,7 +34,7 @@ function moveRandomly() {
 }
 
 // إبقاء البوت متصلاً
-KeepAlive();
+
 
 // التعامل مع الأحداث
 bot.on('kicked', (reason) => console.log(`تم طرد البوت: ${reason}`));
