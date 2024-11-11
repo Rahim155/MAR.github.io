@@ -10,6 +10,7 @@ const bot = mineflayer.createBot({
 bot.on('login', () => {
   console.log('تم تسجيل الدخول بنجاح!');
   bot.chat('مرحباً! سأبدأ التحرك بشكل عشوائي.');
+  bot.chat('/gamemode spectator MAR');
   setInterval(() => {
     if (bot.entity.onGround) { // التأكد من أن البوت على الأرض
       moveRandomly();
