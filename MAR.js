@@ -6,6 +6,7 @@ const bot = mineflayer.createBot({
   username: 'MAR' // اسم البوت
 });
 
+
 // عند تسجيل الدخول
 bot.on('login', () => {
   console.log('تم تسجيل الدخول بنجاح!');
