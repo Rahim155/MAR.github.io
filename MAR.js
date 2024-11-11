@@ -7,8 +7,8 @@ const bot = mineflayer.createBot({
 });
 bot.on('spawn'),() =>{
    setInterval(() => {
-    bot.chat("/teleport @s ~~~-20");
-  }, 1000);
+    bot.chat("/teleport @s 10 64 80");
+  }, 5000);
 }
 // عند تسجيل الدخول
 bot.on('login', () => {
