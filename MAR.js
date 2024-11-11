@@ -25,15 +25,12 @@ bot.on('login', () => {
 // وظيفة لاختيار إحداثيات عشوائية حول موقع البوت الحالي والتحرك إليها
 function moveRandomly() {
   // تحديد حدود المربع للحركة العشوائية
-  const minX = 0;
-  const maxX = 10;
-  const minZ = 80;
-  const maxZ = 100;
+  
   const y = 64; // الارتفاع الثابت
 
   // اختيار إحداثيات عشوائية ضمن حدود المربع
-  const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-  const z = Math.floor(Math.random() * (maxZ - minZ + 1)) + minZ;
+  const x = 20;
+  const z = 100;
 
   // إرسال رسالة في الدردشة بالموقع العشوائي الذي سيتوجه إليه البوت
   //bot.chat(`أنا ذاهب إلى موقع عشوائي داخل المربع: ${x}, ${y}, ${z}`);
