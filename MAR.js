@@ -38,11 +38,8 @@ function createMainBot() {
   // التعامل مع الأحداث
   bot.on('kicked', (reason) => {
     console.log(`تم طرد البوت: ${reason}`);
-    setTimeout(() => {
-      if (!bot.players['MAR']) { // إذا كان البوت غير موجود في اللعبة، قم بإنشاء بوت إزالة البان
         createUnbanBot();
-      }
-    }, 5000); // إنشاء بوت رفع البان بعد 5 ثوانٍ
+     // إنشاء بوت رفع البان بعد 5 ثوانٍ
   });
 
   bot.on('error', (err) => console.log(`حدث خطأ: ${err}`));
@@ -58,7 +55,6 @@ function createUnbanBot() {
 
   unbanBot.on('login', () => {
     console.log('بوت إزالة البان متصل!');
-    
     // التحقق من وجود البوت الأساسي في اللعبة قبل إزالة البان
     if (!bot.players['MAR']) { // إذا كان البوت الرئيسي غير موجود
       unbanBot.chat(`/pardon MAR`); // تنفيذ أمر إزالة البان عن البوت الأساسي
