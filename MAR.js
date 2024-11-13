@@ -37,5 +37,32 @@ function moveRandomly() {
 
 
 // التعامل مع الأحداث
-bot.on('kicked', (reason) => console.log(`تم طرد البوت: ${reason}`));
+ bot.on('kicked', (reason) => {
+    console.log(`تم طرد البوت: ${reason}`);
+    setTimeout(createUnbanBot, 5000); // إنشاء بوت رفع البان بعد 5 ثوانٍ
+  });
+
 bot.on('error', (err) => console.log(`حدث خطأ: ${err}`));
+
+function createUnbanBot() {
+  unbanBot = mineflayer.createBot({
+    host: 'Rahim_155.aternos.me',
+    port: 63410,
+    username: 'UnbanBot' // اسم مؤقت للبوت لإزالة البان
+  });
+
+  unbanBot.on('login', () => {
+    console.log('بوت إزالة البان متصل!');
+    unbanBot.chat(`/pardon MAR`); // تنفيذ أمر إزالة البان عن البوت الأساسي
+
+    setTimeout(() => {
+      createMainBot(); // إعادة إنشاء البوت الأساسي بعد 5 ثوانٍ
+    }, 5000);
+
+    setTimeout(() => {
+      unbanBot.end(); // تسجيل الخروج من بوت إزالة البان بعد 5 ثوانٍ
+    }, 10000);
+  });
+
+  unbanBot.on('error', (err) => console.log(`خطأ في بوت إزالة البان: ${err}`));
+}
