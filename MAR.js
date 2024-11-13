@@ -1,10 +1,11 @@
 const mineflayer = require('mineflayer');
 const KeepAlive = require("./server"); // تأكد من أن هذه الدالة معرفة وتعمل بشكل صحيح
-const bot = mineflayer.createBot({
-  host: 'Rahim_155.aternos.me', // عنوان السيرفر
-  port: 63410, // منفذ ماين كرافت الافتراضي
-  username: 'MAR' // اسم البوت
-});
+function createMainBot() {
+  bot = mineflayer.createBot({
+    host: 'Rahim_155.aternos.me', // عنوان السيرفر
+    port: 63410, // منفذ ماين كرافت الافتراضي
+    username: "MAR" // اسم البوت
+  });
 
 
 // عند تسجيل الدخول
