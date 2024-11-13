@@ -55,14 +55,20 @@ function createUnbanBot() {
   unbanBot.on('login', () => {
     console.log('بوت إزالة البان متصل!');
     unbanBot.chat(`/pardon MAR`); // تنفيذ أمر إزالة البان عن البوت الأساسي
-
+    const player = bot.players[playerName];
+      if (player.username === 'Rahim') {
+        console.log('اللاعب Rahim موجود في اللعبة!');
+        return; // إيقاف البحث بعد إيجاد اللاعب
+      }else{
     setTimeout(() => {
       createMainBot(); // إعادة إنشاء البوت الأساسي بعد 5 ثوانٍ
     }, 5000);
+        setTimeout(() => {
+        unbanBot.end(); // تسجيل الخروج من بوت إزالة البان بعد 5 ثوانٍ
+        }, 10000);
+      }
 
-    setTimeout(() => {
-      unbanBot.end(); // تسجيل الخروج من بوت إزالة البان بعد 5 ثوانٍ
-    }, 10000);
+    
   });
 
   unbanBot.on('error', (err) => console.log(`خطأ في بوت إزالة البان: ${err}`));
