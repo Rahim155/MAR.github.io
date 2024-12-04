@@ -6,7 +6,7 @@ let bot; // المتغير العام للبوت الأساسي
 function createMainBot() {
   bot = mineflayer.createBot({
     host: 'Rahim_155.aternos.me', // عنوان السيرفر
-    port: 63410, // منفذ ماين كرافت الافتراضي
+    port:  32631, // منفذ ماين كرافت الافتراضي
     username: "MAR155" // اسم البوت
   });
 
