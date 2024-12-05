@@ -14,13 +14,13 @@ function createMainBot() {
   bot.on('login', () => {
     console.log('تم تسجيل الدخول بنجاح!');
     bot.chat('/gamerule sendCommandFeedback false');
-    bot.chat('/gamemode spectator MAR');
+    bot.chat('/gamemode spectator MAR155');
     KeepAlive();
     setInterval(() => {
       if (bot.entity.onGround) { // التأكد من أن البوت على الأرض
         moveRandomly();
       }
-      bot.chat('/teleport MAR 10 64 80');
+      bot.chat('/teleport MAR155 10 64 80');
     }, 5000); // التحرك العشوائي كل 5 ثوانٍ
   });
 
@@ -48,16 +48,16 @@ function createMainBot() {
 // إنشاء بوت جديد لإزالة البان
 function createUnbanBot() {
   const unbanBot = mineflayer.createBot({
-    host: 'Rahim_155.aternos.me',
-    port: 63410,
+    host: 'Rahim_go.aternos.me', // عنوان السيرفر
+    port:  32631,
     username: 'UnbanBot' // اسم مؤقت للبوت لإزالة البان
   });
 
   unbanBot.on('login', () => {
     console.log('بوت إزالة البان متصل!');
     // التحقق من وجود البوت الأساسي في اللعبة قبل إزالة البان
-    if (!bot.players['MAR']) { // إذا كان البوت الرئيسي غير موجود
-      unbanBot.chat(`/pardon MAR`); // تنفيذ أمر إزالة البان عن البوت الأساسي
+    if (!bot.players['MAR155']) { // إذا كان البوت الرئيسي غير موجود
+      unbanBot.chat(`/pardon MAR155`); // تنفيذ أمر إزالة البان عن البوت الأساسي
 
       setTimeout(() => {
         createMainBot(); // إعادة إنشاء البوت الأساسي بعد 5 ثوانٍ
