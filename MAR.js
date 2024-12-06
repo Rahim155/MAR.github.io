@@ -2,6 +2,14 @@ const mineflayer = require('mineflayer');
 const KeepAlive = require("./server"); // تأكد من أن هذه الدالة معرفة وتعمل بشكل صحيح
 
 let bot; // المتغير العام للبوت الأساسي
+let currentPoint = 0; // نقطة البداية
+
+const points = [
+  { x: 10, y: 64, z: 80 }, // النقطة 1
+  { x: 20, y: 64, z: 80 }, // النقطة 2
+  { x: 30, y: 64, z: 80 }, // النقطة 3
+  { x: 40, y: 64, z: 80 }  // النقطة 4
+];
 
 function createMainBot() {
   bot = mineflayer.createBot({
@@ -16,30 +24,23 @@ function createMainBot() {
     bot.chat('/gamerule sendCommandFeedback false');
     bot.chat('/gamemode spectator MAR155');
     KeepAlive();
-    setInterval(() => {
-      if (bot.entity.onGround) { // التأكد من أن البوت على الأرض
-        moveRandomly();
-      }
-      bot.chat('/teleport MAR155 10 64 80');
-    }, 5000); // التحرك العشوائي كل 5 ثوانٍ
+    moveToNextPoint();
   });
 
-  // وظيفة لاختيار إحداثيات عشوائية حول موقع البوت الحالي والتحرك إليها
-  function moveRandomly() {
-    const y = 64; // الارتفاع الثابت
-    const x = bot.entity.position.x + (Math.floor(Math.random() * 20) - 10); // إحداثي عشوائي حول الموقع الحالي
-    const z = bot.entity.position.z + (Math.floor(Math.random() * 20) - 10); // إحداثي عشوائي حول الموقع الحالي
-
-    bot.chat(`/teleport ${x} ${y} ${z}`); // استخدام أمر التليبور للتحرك
-    bot.setControlState('forward', true); // بدء التحرك للأمام
-    setTimeout(() => bot.setControlState('forward', false), 5000); // إيقاف الحركة بعد 5 ثوانٍ
+  // دالة للتحرك إلى النقطة التالية
+  function moveToNextPoint() {
+    const point = points[currentPoint];
+    bot.chat(`/teleport ${point.x} ${point.y} ${point.z}`);
+    
+    currentPoint = (currentPoint + 1) % points.length; // تحديث النقطة التالية
+    
+    setTimeout(moveToNextPoint, 5000); // الانتقال إلى النقطة التالية بعد 5 ثوانٍ
   }
 
   // التعامل مع الأحداث
   bot.on('kicked', (reason) => {
     console.log(`تم طرد البوت: ${reason}`);
-        createUnbanBot();
-     // إنشاء بوت رفع البان بعد 5 ثوانٍ
+    createUnbanBot(); // إنشاء بوت رفع البان بعد 5 ثوانٍ
   });
 
   bot.on('error', (err) => console.log(`حدث خطأ: ${err}`));
