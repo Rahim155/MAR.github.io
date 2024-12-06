@@ -3,6 +3,7 @@ const KeepAlive = require("./server"); // تأكد من أن هذه الدالة
 
 let bot; // المتغير العام للبوت الأساسي
 let currentPoint = 0; // نقطة البداية
+let movingInterval; // متغير للتأكد من توقف الحركة عند الحاجة
 
 const points = [
   { x: 10, y: 64, z: 80 }, // النقطة 1
@@ -30,11 +31,34 @@ function createMainBot() {
   // دالة للتحرك إلى النقطة التالية
   function moveToNextPoint() {
     const point = points[currentPoint];
-    bot.chat(`/teleport ${point.x} ${point.y} ${point.z}`);
-    
-    currentPoint = (currentPoint + 1) % points.length; // تحديث النقطة التالية
-    
-    setTimeout(moveToNextPoint, 5000); // الانتقال إلى النقطة التالية بعد 5 ثوانٍ
+    moveToPoint(point);
+  }
+
+  // دالة للتحرك نحو نقطة معينة
+  function moveToPoint(point) {
+    clearInterval(movingInterval); // تأكد من عدم وجود أي حركات معلقة
+    const distance = 1; // المسافة التي يتحركها البوت في كل خطوة
+    const speed = 100; // سرعة الحركة (كل 100 ملي ثانية)
+
+    movingInterval = setInterval(() => {
+      const dx = point.x - bot.entity.position.x;
+      const dz = point.z - bot.entity.position.z;
+
+      if (Math.abs(dx) < distance && Math.abs(dz) < distance) {
+        clearInterval(movingInterval);
+        currentPoint = (currentPoint + 1) % points.length; // تحديث النقطة التالية
+        setTimeout(moveToNextPoint, 2000); // الانتقال إلى النقطة التالية بعد 2 ثوانٍ
+        return;
+      }
+
+      if (dx > 0) bot.setControlState('right', true);
+      else if (dx < 0) bot.setControlState('left', true);
+      else bot.setControlState('right', false), bot.setControlState('left', false);
+
+      if (dz > 0) bot.setControlState('forward', true);
+      else if (dz < 0) bot.setControlState('back', true);
+      else bot.setControlState('forward', false), bot.setControlState('back', false);
+    }, speed);
   }
 
   // التعامل مع الأحداث
