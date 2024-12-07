@@ -1,5 +1,6 @@
 const mineflayer = require('mineflayer');
 const { setTimeout } = require('timers/promises');
+const KeepAlive = require("./server");
 
 // إعدادات البوت
 const botOptions = {
@@ -23,6 +24,7 @@ function createBot() {
     const bot = mineflayer.createBot(botOptions);
 
     bot.on('spawn', async () => {
+      KeepAlive();
         console.log('البوت متصل بنجاح!');
         retryCount = 0; // إعادة ضبط عدد المحاولات عند النجاح
         afterPardonRetryCount = 0; // إعادة ضبط محاولات ما بعد إزالة البان
