@@ -1,71 +1,96 @@
 const mineflayer = require('mineflayer');
-//const KeepAlive = require("./server"); // تأكد من أن هذه الدالة معرفة وتعمل بشكل صحيح
+const { setTimeout } = require('timers/promises');
 
-let bot; // المتغير العام للبوت الأساسي
-
-function createMainBot() {
-  bot = mineflayer.createBot({
-    host: 'Rahim_go.aternos.me', // عنوان السيرفر
-    port:  32631, // منفذ ماين كرافت الافتراضي
-    username: "MAR" // اسم البوت
-  });
-
-  // عند تسجيل الدخول
-  bot.on('login', () => {
-    console.log('تم تسجيل الدخول بنجاح!');
-    bot.chat('/gamerule sendCommandFeedback false');
-    bot.chat('/gamemode survival MAR');
-    //KeepAlive();
-    setInterval(() => {
-        moveRandomly();
-     
-    }, 20000); // التحرك العشوائي كل 5 ثوانٍ
-  });
-
-  // وظيفة لاختيار إحداثيات عشوائية حول موقع البوت الحالي والتحرك إليها
-  function moveRandomly() {
-     bot.chat('/teleport MAR 10 30000 80');
-  }
-
-  // التعامل مع الأحداث
-  bot.on('kicked', (reason) => {
-    console.log(`تم طرد البوت: ${reason}`);
-        createUnbanBot();
-     // إنشاء بوت رفع البان بعد 5 ثوانٍ
-  });
-
-  bot.on('error', (err) => console.log(`حدث خطأ: ${err}`));
-}
-
-// إنشاء بوت جديد لإزالة البان
-function createUnbanBot() {
-  const unbanBot = mineflayer.createBot({
+// إعدادات البوت
+const botOptions = {
     host: 'Rahim_go.aternos.me',
     port: 32631,
-    username: 'UnbanBot' // اسم مؤقت للبوت لإزالة البان
-  });
+    username: 'MAR'
+};
 
-  unbanBot.on('login', () => {
-    console.log('بوت إزالة البان متصل!');
-    // التحقق من وجود البوت الأساسي في اللعبة قبل إزالة البان
-    if (!bot.players['MAR']) { // إذا كان البوت الرئيسي غير موجود
-      unbanBot.chat(`/pardon MAR`); // تنفيذ أمر إزالة البان عن البوت الأساسي
+// نقاط الحركة
+const points = [
+    { x: 100, y: 64, z: 100 },
+    { x: 150, y: 64, z: 150 },
+    { x: 200, y: 64, z: 100 },
+    { x: 150, y: 64, z: 50 }
+];
 
-      setTimeout(() => {
-        createMainBot(); // إعادة إنشاء البوت الأساسي بعد 5 ثوانٍ
-      }, 5000);
+let retryCount = 0;
+let afterPardonRetryCount = 0;
 
-      setTimeout(() => {
-        unbanBot.end(); // تسجيل الخروج من بوت إزالة البان بعد 10 ثوانٍ
-      }, 10000);
-    } else {
-      console.log('البوت MAR موجود بالفعل في اللعبة، لن نقوم بإزالة البان.');
-      unbanBot.end(); // لا داعي للقيام بأي شيء، أغلق بوت إزالة البان
-    }
-  });
+function createBot() {
+    const bot = mineflayer.createBot(botOptions);
 
-  unbanBot.on('error', (err) => console.log(`خطأ في بوت إزالة البان: ${err}`));
+    bot.on('spawn', async () => {
+        console.log('البوت متصل بنجاح!');
+        retryCount = 0; // إعادة ضبط عدد المحاولات عند النجاح
+        afterPardonRetryCount = 0; // إعادة ضبط محاولات ما بعد إزالة البان
+        let index = 0;
+
+        // الحركة بين النقاط
+        while (true) {
+            const point = points[index];
+            console.log(`التحرك إلى النقطة: (${point.x}, ${point.y}, ${point.z})`);
+            try {
+                await bot.pathfinder.goto(new bot.pathfinder.goals.GoalBlock(point.x, point.y, point.z));
+                index = (index + 1) % points.length; // الانتقال إلى النقطة التالية
+            } catch (err) {
+                console.error('خطأ أثناء الحركة:', err.message);
+            }
+        }
+    });
+
+    bot.on('end', async () => {
+        console.log('تم فصل البوت.');
+        if (retryCount < 3) {
+            retryCount++;
+            console.log(`محاولة إعادة الاتصال (${retryCount}/3)...`);
+            await setTimeout(3000); // الانتظار 3 ثواني قبل إعادة المحاولة
+            createBot(); // محاولة إعادة الاتصال
+        } else if (afterPardonRetryCount < 3) {
+            console.log('فشل الاتصال. سيتم إزالة البان...');
+            createPardonBot();
+        } else {
+            console.log('فشل الاتصال نهائيًا بعد كل المحاولات.');
+        }
+    });
+
+    bot.on('error', (err) => console.error('حدث خطأ في البوت:', err.message));
 }
 
-// بدء البوت الأساسي
-createMainBot();
+function createPardonBot() {
+    const pardonBot = mineflayer.createBot({
+        host: 'Rahim_go.aternos.me',
+        port: 32631,
+        username: 'PardonBot'
+    });
+
+    pardonBot.on('spawn', () => {
+        console.log('بوت إزالة البان متصل.');
+        pardonBot.chat('/pardon MAR'); // تنفيذ أمر إزالة البان
+        setTimeout(() => {
+            console.log('إزالة البان تمت. محاولة إعادة الاتصال...');
+            pardonBot.end(); // قطع اتصال البوت بعد التنفيذ
+            retryAfterPardon();
+        }, 5000);
+    });
+
+    pardonBot.on('end', () => console.log('بوت إزالة البان فصل الاتصال.'));
+    pardonBot.on('error', (err) => console.error('خطأ في بوت إزالة البان:', err.message));
+}
+
+async function retryAfterPardon() {
+    for (let i = 1; i <= 3; i++) {
+        console.log(`محاولة إعادة الاتصال بعد إزالة البان (${i}/3)...`);
+        createBot();
+        await setTimeout(3000); // الانتظار 3 ثوانٍ بين المحاولات
+        afterPardonRetryCount++;
+        if (afterPardonRetryCount >= 3) {
+            console.log('فشل الاتصال بعد إزالة البان.');
+            break;
+        }
+    }
+}
+
+createBot();
